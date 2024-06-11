@@ -1,0 +1,31 @@
+{
+  "name": "social-app",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "This is a social app where user can share post user can comment ",
+  "main": "server.ts",
+  "author": "zlaam",
+  "license": "MIT",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "predev": "npm run build",
+    "dev": "concurrently \"tsc -w & node\"  \"nodemon --env-file .env ./dist/server.js\""
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.2",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.6"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.15.0",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "prisma": "^5.15.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
