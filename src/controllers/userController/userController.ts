@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/AsyncHandler";
 import { prisma } from "../../db";
 import { apiResponse } from "../../utils/ApiResponse";
+import { passwordHasher } from "../../utils/PasswordHasher";
 
 //* Handle Register function
 export const handleRegisterUser = asyncHandler(
@@ -15,15 +16,18 @@ export const handleRegisterUser = asyncHandler(
         username: username,
       },
     });
+
     if (isUserAlreadyExist)
       throw { status: 400, message: "User already exist with same details!!" };
+    const hashedPassword = await passwordHasher(password, res);
     const createdUser = await prisma.user.create({
       data: {
         username,
         fullName,
         email,
-        password,
+        password: hashedPassword as string,
       },
+      select: { username: true, fullName: true, email: true },
     });
     return res
       .status(201)
