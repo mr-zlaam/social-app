@@ -29,9 +29,9 @@ model House {
   id           String   @unique @default(cuid())
   address      String   @unique
   wifiPassword String?
-  owner        User     @relation("HouseOwner", fields: [ownerId], references: [id])
+  owner        User     @relation("HouseOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId      String
-  builtBy      User     @relation("HouseBuilder", fields: [builtById], references: [id])
+  builtBy      User     @relation("HouseBuilder", fields: [builtById], references: [id], onDelete: NoAction)
   builtById    String
   createdAt    DateTime @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime @updatedAt @db.Timestamptz(3)

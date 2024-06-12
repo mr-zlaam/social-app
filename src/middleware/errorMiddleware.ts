@@ -30,8 +30,7 @@ export const errorHandler = (
       statusCode: error.status || 500,
       // message: error.message || "some thing went wrong!!",
       message:
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
+        error instanceof Prisma.PrismaClientKnownRequestError
           ? "something went wrong!!"
           : error.message + "!!" || "internal server error!!",
       data: null,
