@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {
-  handleFetchUser,
+  handleFetchUsers,
   handleLoginUser,
   handleRegisterUser,
 } from "../controllers/userController/userController";
 const userRouter = Router();
 userRouter.route("/register").post(handleRegisterUser);
 userRouter.route("/login").post(handleLoginUser);
-userRouter.route("/fetchUsers").get(handleFetchUser);
+userRouter.route("/fetchAllUsers").get(handleFetchUsers);
 export { userRouter };
