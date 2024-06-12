@@ -1,6 +1,6 @@
 import connectDB from "./src/db";
 connectDB()
-  .then(() => console.log("SUCCESS"))
+  .then(() => console.log("success:true"))
   .catch((err) => {
-    console.log("FAILURE!!!");
+    console.log("success:false");
   });
