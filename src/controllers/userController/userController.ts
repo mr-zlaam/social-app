@@ -41,7 +41,7 @@ export const handleRegisterUser = asyncHandler(
   }
 );
 
-//* Handle Register function
+//* Handle Login function
 export const handleLoginUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -80,5 +80,23 @@ export const handleFetchUsers = asyncHandler(
     return res
       .status(200)
       .json(new apiResponse(200, users, "All users fetched successfully"));
+  }
+);
+export const handleFetchSingleUser = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const user = await prisma.user.findFirst({
+      where: { id: id },
+      select: { id: true, username: true, fullName: true, email: true },
+    });
+    return res
+      .status(200)
+      .json(
+        new apiResponse(
+          200,
+          user,
+          `${user?.username || "user"}'s data fetched successfully`
+        )
+      );
   }
 );
