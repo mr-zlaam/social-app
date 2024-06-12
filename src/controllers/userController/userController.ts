@@ -54,7 +54,18 @@ export const handleLoginUser = asyncHandler(
       throw { status: 400, message: "Please register yourself first!!" };
     // checking credentials
     await verifyPassword(password, isUserAlreadyExist?.password as string, res);
-    res.send("helloworld");
+    return res.status(200).json(
+      new apiResponse(
+        200,
+        {
+          id: isUserAlreadyExist?.id || "",
+          username: isUserAlreadyExist?.username || "",
+          fullName: isUserAlreadyExist?.fullName || "",
+          email: isUserAlreadyExist?.email || "",
+        },
+        `${isUserAlreadyExist?.fullName || "User"} logined successfully`
+      )
+    );
   }
 
   //*end of fn
