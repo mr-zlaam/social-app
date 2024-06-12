@@ -121,3 +121,47 @@ export const handleFetchSingleUser = asyncHandler(
       );
   }
 );
+//* Handle Update users
+
+export const handleUpdateUser = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { username, fullName, email, password } = req.body;
+    if (!username || !fullName || !email || !password)
+      throw { status: 400, message: "All fields are required!!" };
+    const isUserAlreadyExist = await prisma.user.findFirst({
+      where: {
+        AND: [
+          {
+            OR: [{ email: email }, { username: username }],
+          },
+          {
+            NOT: { id: id },
+          },
+        ],
+      },
+    });
+    if (isUserAlreadyExist)
+      throw {
+        status: 400,
+        message: "username or email already exists",
+      };
+
+    const hashedUpdatePassword = await passwordHasher(password, res);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: id },
+      data: {
+        username,
+        fullName,
+        email,
+        password: hashedUpdatePassword as string,
+      },
+    });
+    return res
+      .status(201)
+      .json(
+        new apiResponse(201, updatedUser, "Profile updated successfully!!")
+      );
+  }
+);
