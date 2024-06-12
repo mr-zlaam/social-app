@@ -89,6 +89,9 @@ export const handleFetchUsers = asyncHandler(
         createdAt: true,
         updatedAt: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return res
       .status(200)
