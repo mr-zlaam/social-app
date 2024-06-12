@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ISDEVELOPMENT_ENVIRONMENT } from "../config";
+import { Prisma } from "@prisma/client";
 
 interface CustomError extends Error {
   status?: number;
@@ -27,9 +28,14 @@ export const errorHandler = (
     error: {
       success: false,
       statusCode: error.status || 500,
-      message: error.message || "some thing went wrong!!",
+      // message: error.message || "some thing went wrong!!",
+      message:
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+          ? "something went wrong!!"
+          : error.message + "!!" || "internal server error!!",
       data: null,
-      stack: error.stack,
+      stack: ISDEVELOPMENT_ENVIRONMENT && error.stack ? error.stack : null,
       stacks: ISDEVELOPMENT_ENVIRONMENT
         ? error.stack
           ? error.stack

@@ -165,3 +165,16 @@ export const handleUpdateUser = asyncHandler(
       );
   }
 );
+
+//* Handle Delete User
+
+export const handleDeleteUserr = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) throw { status: 400, message: "User ID is required!!" };
+    const user = await prisma.user.delete({ where: { id: id } });
+    return res
+      .status(204)
+      .json(new apiResponse(204, user, "user deleted successfully"));
+  }
+);
