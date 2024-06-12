@@ -27,7 +27,13 @@ export const handleRegisterUser = asyncHandler(
         email,
         password: hashedPassword as string,
       },
-      select: { username: true, fullName: true, email: true },
+      select: {
+        username: true,
+        fullName: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     return res
       .status(201)
@@ -71,23 +77,38 @@ export const handleLoginUser = asyncHandler(
   //*end of fn
 );
 
-//* Handle Register function
+//* Handle Fetch All users
 export const handleFetchUsers = asyncHandler(
   async (req: Request, res: Response) => {
     const users = await prisma.user.findMany({
-      select: { id: true, username: true, fullName: true, email: true },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     return res
       .status(200)
       .json(new apiResponse(200, users, "All users fetched successfully"));
   }
 );
+//* Handle fetch single user
 export const handleFetchSingleUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const user = await prisma.user.findFirst({
       where: { id: id },
-      select: { id: true, username: true, fullName: true, email: true },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     return res
       .status(200)
