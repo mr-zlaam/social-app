@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/AsyncHandler";
 import { prisma } from "../../db";
 import { apiResponse } from "../../utils/ApiResponse";
-import { passwordHasher } from "../../utils/PasswordHasher";
+import { passwordHasher, verifyPassword } from "../../utils/PasswordHasher";
 
 //* Handle Register function
 export const handleRegisterUser = asyncHandler(
@@ -43,10 +43,31 @@ export const handleRegisterUser = asyncHandler(
 
 //* Handle Register function
 export const handleLoginUser = asyncHandler(
-  async (req: Request, res: Response) => {}
+  async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    if (!email || !password)
+      throw { status: 400, message: "Please Provide all fields!!" };
+    const isUserAlreadyExist = await prisma.user.findFirst({
+      where: { email: email },
+    });
+    if (!isUserAlreadyExist)
+      throw { status: 400, message: "Please register yourself first!!" };
+    // checking credentials
+    await verifyPassword(password, isUserAlreadyExist?.password as string, res);
+    res.send("helloworld");
+  }
+
+  //*end of fn
 );
 
 //* Handle Register function
-export const handleFetchUser = asyncHandler(
-  async (req: Request, res: Response) => {}
+export const handleFetchUsers = asyncHandler(
+  async (req: Request, res: Response) => {
+    const users = await prisma.user.findMany({
+      select: { id: true, username: true, fullName: true, email: true },
+    });
+    return res
+      .status(200)
+      .json(new apiResponse(200, users, "All users fetched successfully"));
+  }
 );
