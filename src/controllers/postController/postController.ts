@@ -77,3 +77,41 @@ export const handleGetSinglePost = asyncHandler(
       .json(new apiResponse(200, singlePost, "Post fetched successfully!!"));
   }
 );
+
+export const handleUpdatePost = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) throw { status: 400, message: "Post id is required!!" };
+    const { title, content } = req.body;
+    if (!title || !content)
+      throw {
+        status: 400,
+        message: "Title and content are required!!",
+      };
+    const updatePost = await prisma.post.update({
+      where: { post_id: id },
+      data: {
+        title,
+        content,
+      },
+      include: {
+        author: {
+          select: {
+            username: true,
+            fullName: true,
+            email: true,
+          },
+        },
+      },
+    });
+    return res
+      .status(201)
+      .json(
+        new apiResponse(
+          201,
+          updatePost,
+          `Post updated successfully by ${updatePost.author.fullName || "unknown user"} `
+        )
+      );
+  }
+);
