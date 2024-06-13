@@ -14,32 +14,35 @@ datasource db {
 }
 
 model User {
-  id        String   @unique @default(cuid())
-  username  String   @unique
-  fullName  String?  @default("")
-  email     String   @unique
+  id        String    @unique @default(cuid())
+  username  String    @unique
+  fullName  String?   @default("")
+  email     String    @unique
   password  String?
-  createdAt DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @db.Timestamptz(3)
-
-  posts    Post[]    @relation("PostAuthor")
-  comments Comment[] @relation("CommentAuthor")
+  posts     Post[]    @relation("PostAuthor")
+  comments  Comment[] @relation("CommentAuthor")
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
 }
 
 model Post {
-  post_id  String    @id @default(cuid())
-  title    String    @db.VarChar(200)
-  content  String
-  author   User      @relation("PostAuthor", fields: [authorId], references: [id])
-  authorId String
-  comments Comment[] @relation("PostComments")
+  post_id   String    @id @default(cuid())
+  title     String    @db.VarChar(200)
+  content   String
+  author    User      @relation("PostAuthor", fields: [authorId], references: [id])
+  authorId  String
+  comments  Comment[] @relation("PostComments")
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
 }
 
 model Comment {
-  comment_id     String  @id @default(cuid())
-  commentContent String? @default("") @db.VarChar(200)
-  author         User    @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  comment_id     String   @id @default(cuid())
+  commentContent String?  @default("") @db.VarChar(200)
+  author         User     @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
   authorId       String
-  post           Post    @relation("PostComments", fields: [post_id], references: [post_id], onDelete: Cascade)
+  post           Post     @relation("PostComments", fields: [post_id], references: [post_id], onDelete: Cascade)
   post_id        String
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(3)
 }
