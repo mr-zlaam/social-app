@@ -21,6 +21,7 @@ export const handleCreatePost = asyncHandler(
 // * Fetch All Posts Method
 export const handleGetAllPosts = asyncHandler(
   async (req: Request, res: Response) => {
+    // *TODO:Add pagination here
     const posts = await prisma.post.findMany({
       include: {
         author: {
@@ -45,5 +46,34 @@ export const handleGetAllPosts = asyncHandler(
       .json(
         new apiResponse(200, posts, "All Post data fetched successfully!!")
       );
+  }
+);
+export const handleGetSinglePost = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) throw { status: 400, message: "Post id is required!!" };
+    const singlePost = await prisma.post.findUnique({
+      where: { post_id: id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+            email: true,
+            posts: {
+              select: {
+                title: true,
+              },
+            },
+            comments: true,
+          },
+        },
+        comments: true,
+      },
+    });
+    return res
+      .status(200)
+      .json(new apiResponse(200, singlePost, "Post fetched successfully!!"));
   }
 );

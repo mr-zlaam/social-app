@@ -102,7 +102,7 @@ export const handleFetchUsers = asyncHandler(
 export const handleFetchSingleUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: { id: id },
       select: {
         id: true,
