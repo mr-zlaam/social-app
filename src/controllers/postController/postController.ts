@@ -11,7 +11,10 @@ export const handleCreatePost = asyncHandler(
     console.log(title, content, authorId);
     const post = await prisma.post.create({
       data: { title, content, authorId },
-      include: { author: true, comments: true },
+      include: {
+        author: { select: { username: true, email: true, fullName: true } },
+        comments: true,
+      },
     });
     return res
       .status(201)
@@ -40,31 +43,24 @@ export const handleGetAllPosts = asyncHandler(
     // Fetch posts with pagination
     const posts = await prisma.post.findMany({
       include: {
+        comments: {
+          select: {
+            commentContent: true,
+            author: {
+              select: {
+                username: true,
+                email: true,
+                fullName: true,
+              },
+            },
+          },
+        },
         author: {
           select: {
             id: true,
             username: true,
             fullName: true,
             email: true,
-            posts: {
-              select: {
-                title: true,
-                comments: {
-                  select: {
-                    commentContent: true,
-                    author: {
-                      select: {
-                        username: true,
-                        fullName: true,
-                        email: true,
-                      },
-                    },
-                    createdAt: true,
-                    updatedAt: true,
-                  },
-                },
-              },
-            },
           },
         },
       },
@@ -94,22 +90,28 @@ export const handleGetSinglePost = asyncHandler(
     if (!id) throw { status: 400, message: "Post id is required!!" };
     const singlePost = await prisma.post.findUnique({
       where: { post_id: id },
+
       include: {
+        comments: {
+          select: {
+            commentContent: true,
+            author: {
+              select: {
+                username: true,
+                email: true,
+                fullName: true,
+              },
+            },
+          },
+        },
         author: {
           select: {
             id: true,
             username: true,
             fullName: true,
             email: true,
-            posts: {
-              select: {
-                title: true,
-              },
-            },
-            comments: true,
           },
         },
-        comments: true,
       },
     });
     return res
