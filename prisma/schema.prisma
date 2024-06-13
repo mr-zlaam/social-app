@@ -21,18 +21,25 @@ model User {
   password  String?
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
-  // HouseOwned House[]  @relation("HouseOwner")
-  // HouseBuild House[]  @relation("HouseBuilder")
+
+  posts    Post[]    @relation("PostAuthor")
+  comments Comment[] @relation("CommentAuthor")
 }
 
-// model House {
-//   id           String   @unique @default(cuid())
-//   address      String   @unique
-//   wifiPassword String?
-//   owner        User     @relation("HouseOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-//   ownerId      String
-//   builtBy      User     @relation("HouseBuilder", fields: [builtById], references: [id], onDelete: NoAction)
-//   builtById    String
-//   createdAt    DateTime @default(now()) @db.Timestamptz(3)
-//   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
-// }
+model Post {
+  post_id  String    @id @default(cuid())
+  title    String    @db.VarChar(200)
+  content  String
+  author   User      @relation("PostAuthor", fields: [authorId], references: [id])
+  authorId String
+  comments Comment[] @relation("PostComments")
+}
+
+model Comment {
+  comment_id     String  @id @default(cuid())
+  commentContent String? @default("") @db.VarChar(200)
+  author         User    @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId       String
+  post           Post    @relation("PostComments", fields: [post_id], references: [post_id], onDelete: Cascade)
+  post_id        String
+}
