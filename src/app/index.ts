@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { userRouter } from "../routers/UserRouter";
+import { userRouter } from "../routers/userRouter";
 import { DATA_LIMIT } from "../CONSTANTS";
 import { errorHandler, notFoundHandler } from "../middleware/errorMiddleware";
 import { postRouter } from "../routers/postRouter";
