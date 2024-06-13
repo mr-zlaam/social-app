@@ -143,5 +143,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-/prisma/migrations
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
