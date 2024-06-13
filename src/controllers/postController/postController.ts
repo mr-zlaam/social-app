@@ -6,6 +6,7 @@ export const CreatePost = asyncHandler(async (req: Request, res: Response) => {
   const { title, content, authorId } = req.body;
   if (!title || !content || !authorId)
     throw { status: 400, message: "All fields are required!!" };
+  console.log(title, content, authorId);
   const post = await prisma.post.create({
     data: { title, content, authorId },
     include: { author: true, comments: true },
