@@ -57,7 +57,7 @@ export const handleGetAllPosts = asyncHandler(
         comments: true,
       },
       skip,
-      take, // Add pagination parameters
+      take,
     });
 
     // Fetch total count for pagination
