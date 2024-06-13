@@ -86,3 +86,21 @@ export const handleUpdateComment = asyncHandler(
       );
   }
 );
+
+// *delete comment
+
+export const handleDeleteComment = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { commentId } = req.params;
+    const deletedComment = await prisma.comment.delete({
+      where: {
+        comment_id: commentId,
+      },
+    });
+    return res
+      .status(200)
+      .json(
+        new apiResponse(200, deletedComment, "Comment deleted successfully!!")
+      );
+  }
+);
