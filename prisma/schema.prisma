@@ -27,14 +27,15 @@ model User {
 }
 
 model Post {
-  post_id   String    @id @default(cuid())
-  title     String    @db.VarChar(200)
-  content   String
-  author    User      @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  String
-  comments  Comment[] @relation("PostComments")
-  createdAt DateTime  @default(now()) @db.Timestamptz(3)
-  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  post_id      String    @id @default(cuid())
+  title        String    @db.VarChar(200)
+  content      String
+  author       User      @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
+  commentCount Int       @default(0)
+  comments     Comment[] @relation("PostComments")
+  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @db.Timestamptz(3)
 }
 
 model Comment {

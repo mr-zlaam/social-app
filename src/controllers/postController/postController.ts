@@ -48,6 +48,7 @@ export const handleGetAllPosts = asyncHandler(
       );
   }
 );
+// * Get single post
 export const handleGetSinglePost = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -78,6 +79,7 @@ export const handleGetSinglePost = asyncHandler(
   }
 );
 
+// * Update Post
 export const handleUpdatePost = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -115,6 +117,8 @@ export const handleUpdatePost = asyncHandler(
       );
   }
 );
+
+// * Delete Post
 export const handleDeletePost = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -137,6 +141,43 @@ export const handleDeletePost = asyncHandler(
           200,
           deletePost,
           `${deletePost.author.fullName || "unknown user"} deleted this post successfully`
+        )
+      );
+  }
+);
+
+// * Search in Posts
+
+export const handleSearchPost = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { query, page = 1, pageSize = 10 } = req.query;
+    if (!query) throw { status: 400, message: "Search query is required!!" };
+
+    const searchQuery = query as string;
+    const skip = (Number(page) - 1) * Number(pageSize);
+    const take = Number(pageSize);
+
+    const searchPosts = await prisma.$queryRaw`
+      SELECT * FROM "Post"
+      WHERE to_tsvector('english', "title" || ' ' || "content") @@ plainto_tsquery('english', ${searchQuery})
+      ORDER BY "createdAt" DESC
+      OFFSET ${skip} LIMIT ${take}
+    `;
+
+    const totalPostsResult: any = await prisma.$queryRaw`
+      SELECT COUNT(*) FROM "Post"
+      WHERE to_tsvector('english', "title" || ' ' || "content") @@ plainto_tsquery('english', ${searchQuery})
+    `;
+    const totalPosts = Number(totalPostsResult[0].count);
+    const totalPages = Math.ceil(totalPosts / take);
+
+    return res
+      .status(200)
+      .json(
+        new apiResponse(
+          200,
+          { data: searchPosts, totalPages, currentPage: Number(page) },
+          "data searched successfully!!"
         )
       );
   }
