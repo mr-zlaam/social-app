@@ -21,7 +21,23 @@ export const handleCreatePost = asyncHandler(
 // * Fetch All Posts Method
 export const handleGetAllPosts = asyncHandler(
   async (req: Request, res: Response) => {
-    // *TODO:Add pagination here
+    const { page = 1, pageSize = 10 } = req.query;
+    const pageNumber = Number(page);
+    const pageSizeNumber = Number(pageSize);
+
+    if (
+      isNaN(pageNumber) ||
+      isNaN(pageSizeNumber) ||
+      pageNumber <= 0 ||
+      pageSizeNumber <= 0
+    ) {
+      throw { status: 400, message: "Invalid pagination parameters!!" };
+    }
+
+    const skip = (pageNumber - 1) * pageSizeNumber;
+    const take = pageSizeNumber;
+
+    // Fetch posts with pagination
     const posts = await prisma.post.findMany({
       include: {
         author: {
@@ -40,11 +56,22 @@ export const handleGetAllPosts = asyncHandler(
         },
         comments: true,
       },
+      skip,
+      take, // Add pagination parameters
     });
+
+    // Fetch total count for pagination
+    const totalPostsCount = await prisma.post.count();
+    const totalPages = Math.ceil(totalPostsCount / pageSizeNumber);
+
     return res
       .status(200)
       .json(
-        new apiResponse(200, posts, "All Post data fetched successfully!!")
+        new apiResponse(
+          200,
+          { posts, totalPosts: totalPostsCount, totalPages },
+          "All Post data fetched successfully!!"
+        )
       );
   }
 );
