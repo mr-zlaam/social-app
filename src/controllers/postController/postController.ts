@@ -51,7 +51,23 @@ export const handleGetAllPosts = asyncHandler(
                 title: true,
               },
             },
-            comments: true,
+            comments: {
+              // select: {
+              //   commentContent: true,
+              //   author: {
+              //     select: {
+              //       username: true,
+              //       email: true,
+              //       fullName: true,
+              //     },
+              //   },
+              //   createdAt: true,
+              //   updatedAt: true,
+              // },
+              select: {
+                commentContent: true,
+              },
+            },
           },
         },
         comments: true,
