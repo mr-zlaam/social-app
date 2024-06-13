@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/AsyncHandler";
 import { prisma } from "../../db";
+import { apiResponse } from "../../utils/ApiResponse";
 
 export const CreatePost = asyncHandler(async (req: Request, res: Response) => {
   const { title, content, authorId } = req.body;
@@ -11,5 +12,7 @@ export const CreatePost = asyncHandler(async (req: Request, res: Response) => {
     data: { title, content, authorId },
     include: { author: true, comments: true },
   });
-  res.send("Hello world");
+  return res
+    .status(201)
+    .json(new apiResponse(201, post, "Post created successfully!!"));
 });
