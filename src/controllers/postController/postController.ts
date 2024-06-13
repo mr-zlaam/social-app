@@ -115,3 +115,29 @@ export const handleUpdatePost = asyncHandler(
       );
   }
 );
+export const handleDeletePost = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) throw { status: 400, message: "Post id is required!!" };
+    const deletePost = await prisma.post.delete({
+      where: { post_id: id },
+      include: {
+        author: {
+          select: {
+            username: true,
+            fullName: true,
+          },
+        },
+      },
+    });
+    return res
+      .status(200)
+      .json(
+        new apiResponse(
+          200,
+          deletePost,
+          `${deletePost.author.fullName || "unknown user"} deleted this post successfully`
+        )
+      );
+  }
+);

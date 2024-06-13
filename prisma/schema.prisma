@@ -29,7 +29,7 @@ model Post {
   post_id   String    @id @default(cuid())
   title     String    @db.VarChar(200)
   content   String
-  author    User      @relation("PostAuthor", fields: [authorId], references: [id])
+  author    User      @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   comments  Comment[] @relation("PostComments")
   createdAt DateTime  @default(now()) @db.Timestamptz(3)
