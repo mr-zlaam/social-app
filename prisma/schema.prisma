@@ -14,25 +14,25 @@ datasource db {
 }
 
 model User {
-  id         String   @unique @default(cuid())
-  username   String   @unique
-  fullName   String?  @default("")
-  email      String   @unique
-  password   String?
-  createdAt  DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt  DateTime @updatedAt @db.Timestamptz(3)
-  HouseOwned House[]  @relation("HouseOwner")
-  HouseBuild House[]  @relation("HouseBuilder")
+  id        String   @unique @default(cuid())
+  username  String   @unique
+  fullName  String?  @default("")
+  email     String   @unique
+  password  String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  // HouseOwned House[]  @relation("HouseOwner")
+  // HouseBuild House[]  @relation("HouseBuilder")
 }
 
-model House {
-  id           String   @unique @default(cuid())
-  address      String   @unique
-  wifiPassword String?
-  owner        User     @relation("HouseOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId      String
-  builtBy      User     @relation("HouseBuilder", fields: [builtById], references: [id], onDelete: NoAction)
-  builtById    String
-  createdAt    DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
-}
+// model House {
+//   id           String   @unique @default(cuid())
+//   address      String   @unique
+//   wifiPassword String?
+//   owner        User     @relation("HouseOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+//   ownerId      String
+//   builtBy      User     @relation("HouseBuilder", fields: [builtById], references: [id], onDelete: NoAction)
+//   builtById    String
+//   createdAt    DateTime @default(now()) @db.Timestamptz(3)
+//   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+// }
