@@ -66,3 +66,23 @@ export const handleGetAllComment = asyncHandler(
       );
   }
 );
+// *update comment
+export const handleUpdateComment = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { commentId } = req.params;
+    const { commentContent } = req.body;
+    const updatedComment = await prisma.comment.update({
+      where: {
+        comment_id: commentId,
+      },
+      data: {
+        commentContent,
+      },
+    });
+    return res
+      .status(200)
+      .json(
+        new apiResponse(200, updatedComment, "Comment updated successfully!!")
+      );
+  }
+);
